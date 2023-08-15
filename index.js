@@ -1,5 +1,7 @@
 import express from "express"
 import indexRouter from "./router/indexRouter.js"
+import "./config/database.js"
+import cors from "cors"
 
 const server = express()
 
