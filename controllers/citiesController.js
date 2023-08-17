@@ -1,23 +1,72 @@
 import cities from "../data/cities.js";
+import City from '../models/City.js'
 
 const citiesController = {
-    getAllCities: (request, response, next) => {
-        response.json({
-            response: cities,
-            success: true,
-            error: null
+    getAllCities: async (req, res, next) => {
+        let allCities 
+        let error = null
+        let success = true
+        try {
+            allCities = await City.find().sort({ name: 1 })
+        } catch (err) {
+            console.log(err)
+            success = false
+            error = err
+        }
+        res.json({
+            response: allCities,
+            success,
+            error
         })
     },
 
-    getOneCity: (req, res, next) => {
+    getOneCity: async (req, res, next) => {
         console.log(req.params)
-        const { name } = req.params
-        const city = cities.find(city => city.name == name)
+        const { id } = req.params
+        //const city = cities.find(city => city.name == name)
+        let city 
+        let error = null
+        let success = true
+        try {
+            //city = await City.findOne({_id : id})
+            //city = await City.find({_id : id})
+            city = await City.findById(id)
+        } catch (err) {
+            console.log(err)
+            success = false
+            error = err
+        }
         res.json({
             response: city,
-            success: true,
-            error: null
-        })    
+            success,
+            error
+        })   
+    },
+
+    createOneCity: async (req, res, next) => {
+        let newCity;
+        let error = null
+        let success = true
+        try {
+            //const newCity = new City(req.body)
+            //await newCity.save()
+
+            newCity = await City.create(req.body)
+            console.log(newCity)
+
+        } catch (err) {
+            console.log(err)
+            success: false
+            error: err
+        }
+       
+        res.json({
+            response: newCity,
+            success,
+            error
+        }) 
+        
+    
     }
 }
 
