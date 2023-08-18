@@ -44,6 +44,7 @@ const citiesController = {
     },
 
     createOneCity: async (req, res, next) => {
+        //res.send('Crear')
         let newCity;
         let error = null
         let success = true
@@ -58,15 +59,60 @@ const citiesController = {
             console.log(err)
             success: false
             error: err
-        }
-       
+        }       
         res.json({
             response: newCity,
             success,
             error
-        }) 
-        
-    
+        })     
+    },
+
+    updateOneCity: async (req, res, next) => {
+        let city
+        let success = true
+        const { id } = req.params
+        try {
+            city = await City.findOneAndUpdate({ _id: id}, req.body, { new: true })  
+            res.json({
+                response: city,
+                success
+            }) 
+        } catch (err) {
+            success: false
+            next(err)
+        }
+    },
+
+    deleteOneCity: async (req, res, next) => {
+        let city
+        let success = true
+        const { id } = req.params
+        try {
+            city = await City.findOneAndDelete({ _id: id})  
+            res.json({
+                response: city,
+                success
+            }) 
+        } catch (err) {
+            success: false
+            next(err)
+        }
+    },
+
+    searchCity: async (req, res, next) => {
+        let result
+        let success = true
+        const { term } = req.params
+        try {
+            result = await City.find({ name: { $regex: `^${term}`, $options: 'i' } })
+            res.json({
+                response: result,
+                success
+            }) 
+        } catch (err) {
+            success: false
+            next(err)
+        }
     }
 }
 
