@@ -113,6 +113,34 @@ const citiesController = {
             success: false
             next(err)
         }
+    },
+
+    getCitiesPage: async (req, res, next) => {
+        let totalCities
+        //let totalPages
+        let pageCities
+        let success = true
+        let page = req.query.page
+        let limit = req.query.limit
+        //console.log("page:" + page + ", limit: " + limit)
+        try {
+            totalCities = await City.countDocuments()
+            //totalPages = Math.ceil(totalCities / limit)
+            //console.log("cities: " + totalCities + " pages: " + totalPages)
+            if (page * limit > totalCities){
+                page = 1
+                limit = totalCities
+                //console.log("new page: " + page + "and limit: " + limit)
+            }
+            pageCities = await City.find().sort({ name: 1 }).skip((page - 1) * limit).limit(limit) 
+            res.json({
+                response: pageCities,
+                success
+            }) 
+        } catch (error) {
+            success: false
+            next(err)
+        }
     }
 }
 
