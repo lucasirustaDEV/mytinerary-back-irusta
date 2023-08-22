@@ -13,6 +13,4 @@ citiesRouter.post('/', createOneCity)
 citiesRouter.post('/:id', updateOneCity)
 citiesRouter.delete('/:id', deleteOneCity)
 
-
-
 export default citiesRouter

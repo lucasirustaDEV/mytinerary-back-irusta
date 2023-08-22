@@ -137,7 +137,7 @@ const citiesController = {
                 response: pageCities,
                 success
             }) 
-        } catch (error) {
+        } catch (err) {
             success: false
             next(err)
         }
