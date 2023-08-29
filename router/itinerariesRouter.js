@@ -4,19 +4,17 @@ import itinerariesController from '../controllers/itinerariesController.js';
 const itinerariesRouter = Router()
 const { 
     getAllItineraries, 
-    getOneItinerary, 
-    getItinerariesByCity, 
-    createOneItinerary, 
-    updateOneItinerary, 
-    deleteOneItinerary 
+    getItineraryById, 
+    createItinerary, 
+    updateItinerary, 
+    deleteItinerary 
 } = itinerariesController
 
-itinerariesRouter.get('/city/:id', getItinerariesByCity)
-itinerariesRouter.get('/:id', getOneItinerary)
 itinerariesRouter.get('/', getAllItineraries)
+itinerariesRouter.get('/:id', getItineraryById)
 
-itinerariesRouter.post('/', createOneItinerary)
-itinerariesRouter.post('/:id', updateOneItinerary)
-itinerariesRouter.delete('/:id', deleteOneItinerary)
+itinerariesRouter.post('/', createItinerary)
+itinerariesRouter.post('/:id', updateItinerary)
+itinerariesRouter.delete('/:id', deleteItinerary)
 
 export default itinerariesRouter

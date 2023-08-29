@@ -4,93 +4,134 @@ import Itinerary from '../models/Itinerary.js'
 const itinerariesController = {
     getAllItineraries: async (req, res, next) => {
         let allItineraries 
-        let error = null
+        let success = true
+        let { city } = req.query
+        let query = {}
+        if (city) {
+            try {
+                console.log('getItinerariesByCityId')
+                allItineraries = await Itinerary.find( { city : city } )
+                res.json({
+                    response: allItineraries,
+                    success
+                })   
+            } catch (error) {
+                success: false
+                next(err)    
+            }
+ 
+        }else{
+            try {
+                //allItineraries = await Itinerary.find().populate('city')
+                allItineraries = await Itinerary.find().populate( {
+                    path: 'city',
+                    select: 'name -_id'
+                })
+                res.json({
+                    response: allItineraries,
+                    success
+                })
+            } catch (err) {
+                success: false
+                next(err)
+            }
+        }
+    },
+
+    getItineraryById: async (req, res, next) => {
+        //console.log(req.params)
+        const { id } = req.params
+        let itinerary 
         let success = true
         try {
-            allItineraries = await Itinerary.find().populate('city')
-            res.json({
-                response: allItineraries,
-                success,
-                error
+            itinerary = await Itinerary.findById(id).populate( {
+                path: 'city',
+                select: 'name'
             })
+            res.json({
+                response: itinerary,
+                success
+            }) 
         } catch (err) {
-            success = false
-            error = err
+            success: false
             next(err)
-        }
+        }  
     },
 
-    getOneItinerary: async (req, res, next) => {
-        //console.log(req.params)
-        const { id } = req.params
+/*     getItinerariesByCityId: async (req, res, next) => {
+        //console.log(req.query.city)
+        let city = req.query.city
         let itinerary 
-        let error = null
         let success = true
         try {
-            itinerary = await Itinerary.findById(id)
+            console.log('getItinerariesByCityId')
+            itinerary = await Itinerary.find( { city : city } )
+            res.json({
+                response: itinerary,
+                success
+            })  
         } catch (err) {
-            console.log(err)
-            success = false
-            error = err
-        }
-        res.json({
-            response: itinerary,
-            success,
-            error
-        })   
-    },
+            success: false
+            next(err)
+        } 
+    }, */
 
-    getItinerariesByCity: async (req, res, next) => {
-        //console.log(req.params)
-        const { id } = req.params
-        let itinerary 
-        let error = null
-        let success = true
-        try {
-            itinerary = await Itinerary.findById(id)
-        } catch (err) {
-            console.log(err)
-            success = false
-            error = err
-        }
-        res.json({
-            response: itinerary,
-            success,
-            error
-        })   
-    },
-
-    createOneItinerary: async (req, res, next) => {
+    createItinerary: async (req, res, next) => {
         let city
         let itinerary
         let error = null
         let success = true
         try {
-            city = await City.findOne( { name : req.body.city })
-            //console.log("City" + city)
-            const query = { ... req.body }
-            query.city = city._id
-            itinerary = await Itinerary.create(query)
+            if (req.body.city) {
+                city = await City.findOne({ name: { $regex: req.body.city.trim(), $options: 'i' } })
+                if (city) {
+                    //console.log("City" + city)
+                    const query = { ... req.body }
+                    query.city = city._id
+                    itinerary = await Itinerary.create(query)
+                    res.json({
+                        response: itinerary,
+                        success
+                    })
+                }else {
+                    res.json({
+                        success: false,
+                        error: 'The City is not registered'
+                    })                    
+                }
+            }else {
+                res.json({
+                    success: false,
+                    error: 'The Itinerary must have an associated City'
+                })
+            }
         } catch (err) {
-            console.log(err)
             success: false
-            error: err
-        }       
-        res.json({
-            response: itinerary,
-            success,
-            error
-        })     
+            next(err)
+        }            
     },
 
-    updateOneItinerary: async (req, res, next) => {
+    updateItinerary: async (req, res, next) => {
         let city
+        let itinerary
         let success = true
         const { id } = req.params
         try {
-            city = await City.findOneAndUpdate({ _id: id}, req.body, { new: true })  
+            const query = { ... req.body }
+            if (req.body.city) {
+                city = await City.findOne({ name: { $regex: req.body.city.trim(), $options: 'i' } })
+                if (!city) {
+                    res.json({
+                        success: false,
+                        error: 'The City is not registered'
+                    }) 
+                }else{
+                    query.city = city._id
+                }
+            }
+            itinerary = await Itinerary.findOneAndUpdate({ _id: id}, query, { new: true })  
             res.json({
-                response: city,
+                response: itinerary,
                 success
             }) 
         } catch (err) {
@@ -99,14 +140,14 @@ const itinerariesController = {
         }
     },
 
-    deleteOneItinerary: async (req, res, next) => {
-        let city
+    deleteItinerary: async (req, res, next) => {
+        let itinerary
         let success = true
         const { id } = req.params
         try {
-            city = await City.findOneAndDelete({ _id: id})  
+            itinerary = await Itinerary.findOneAndDelete({ _id: id})  
             res.json({
-                response: city,
+                response: itinerary,
                 success
             }) 
         } catch (err) {
