@@ -3,6 +3,7 @@ import { Schema, model, Types } from "mongoose";
 const collection = "itineraries"
 
 const itinerarySchema = Schema({
+    title: { type: String, required: true },
     description: { type: String, required: true },
     city: { type: Schema.Types.ObjectId, ref: 'cities', required: true },
     price: { type: Number, required: true },
