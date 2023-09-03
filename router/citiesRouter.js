@@ -2,7 +2,7 @@ import { Router } from 'express';
 import citiesController from '../controllers/citiesController.js';
 
 const citiesRouter = Router()
-const { getAllCities, getOneCity, createOneCity, updateOneCity, deleteOneCity, searchCity, getCitiesPage } = citiesController
+const { getAllCities, getOneCity, createOneCity, updateOneCity, deleteOneCity, getCitiesPage} = citiesController
 
 citiesRouter.get('/page/', getCitiesPage)
 citiesRouter.get('/:id', getOneCity)

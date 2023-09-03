@@ -8,16 +8,25 @@ const citiesController = {
         if (name) {
             query.name = { $regex: `^${name}`, $options: 'i' }
         }
-        let allCities 
+        let allCities
         let success = true
+        let itineraryIds
+        let citiesAndIties = []
         try {
-            allCities = await City.find(query).sort({ name: 1 })
+            allCities = await City.find(query).sort({ name: 1 })    
+            for (const city of allCities) {
+                const cityData = city.toObject()    
+                const cityItineraries = await Itinerary.find({ city: city._id }, '_id')
+                itineraryIds = cityItineraries.map(itinerary => itinerary._id)
+                cityData.itineraryIds = itineraryIds
+                citiesAndIties.push(cityData)
+            }
             res.json({
-                response: allCities,
-                success
-            })
+                response: citiesAndIties,
+                success,
+            });
         } catch (err) {
-            success: false
+            success; false
             next(err)
         }
     },

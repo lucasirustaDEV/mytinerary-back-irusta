@@ -58,24 +58,6 @@ const itinerariesController = {
         }  
     },
 
-/*     getItinerariesByCityId: async (req, res, next) => {
-        //console.log(req.query.city)
-        let city = req.query.city
-        let itinerary 
-        let success = true
-        try {
-            console.log('getItinerariesByCityId')
-            itinerary = await Itinerary.find( { city : city } )
-            res.json({
-                response: itinerary,
-                success
-            })  
-        } catch (err) {
-            success: false
-            next(err)
-        } 
-    }, */
-
     createItinerary: async (req, res, next) => {
         let city
         let itinerary
