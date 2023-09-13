@@ -56,12 +56,18 @@ const authController = {
     },
 
     loginWithToken : (req, res) => {
-        const { name, email, profile_pic } = req.user
-        res.status(200).json({
-            success: true,
-            userData: {  name, email, profile_pic },
-            message: 'Sign in with token successfully',
-        })
+        try {
+            const { name, email, profile_pic } = req.user
+            console.log("authorization")
+            res.status(200).json({
+                success: true,
+                userData: {  name, email, profile_pic },
+                message: 'Sign in with token successfully',
+            })            
+        } catch (error) {
+            console.log(error);
+            next(error)             
+        }
     }
 
 }

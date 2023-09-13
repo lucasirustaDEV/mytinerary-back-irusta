@@ -11,7 +11,8 @@ const itinerarySchema = Schema({
     likes: { type: Number, required: true, default: 0 },
     provider: { type: String, required: true },
     profile_pic: { type: String, required: true },
-    hashtag: [ { type: String }]
+    hashtag: [{ type: String }],
+    likes: [{ type: Schema.Types.ObjectId, ref: 'users' }]
 }, {
     timestamps: true,
 })

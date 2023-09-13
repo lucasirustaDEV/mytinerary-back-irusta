@@ -10,7 +10,8 @@ const userSchema = Schema({
     password: { type: String, required: true },
     country: { type: Schema.Types.ObjectId, ref: 'countries', required: true },
     birth_date: { type: Date },
-    rol: [ { type: String }]
+    rol: { type: [String], default: ['user'] },
+    likes: [{ type: Schema.Types.ObjectId, ref: 'itineraries' }]
 }, {
     timestamps: true,
 })

@@ -11,13 +11,13 @@ const itinerariesController = {
             try {
                 console.log('getItinerariesByCityId')
                 allItineraries = await Itinerary.find( { city : city } )
-                res.json({
+     res.json({
                     response: allItineraries,
                     success
-                })   
+                })  
             } catch (error) {
                 success: false
-                next(err)    
+                next(error)    
             }
  
         }else{
@@ -111,7 +111,7 @@ const itinerariesController = {
                     query.city = city._id
                 }
             }
-            itinerary = await Itinerary.findOneAndUpdate({ _id: id}, query, { new: true })  
+            itinerary = await Itinerary.findOneAndUpdate({ _id: id}, query, { new: true }) 
             res.json({
                 response: itinerary,
                 success
