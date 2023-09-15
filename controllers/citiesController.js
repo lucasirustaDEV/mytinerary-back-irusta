@@ -13,10 +13,13 @@ const citiesController = {
         let itineraryIds
         let citiesAndIties = []
         try {
-            allCities = await City.find(query).sort({ name: 1 })    
+            allCities = await City.find(query).sort({ name: 1 }).populate( {
+                path: 'country',
+                select: 'name language currency -_id'
+            })    
             for (const city of allCities) {
                 const cityData = city.toObject()    
-                const cityItineraries = await Itinerary.find({ city: city._id }, '_id')
+                const cityItineraries = await Itinerary.find({ city: city._id }, '_id') //TRAE SOLO EL ID DE ITINERARY
                 itineraryIds = cityItineraries.map(itinerary => itinerary._id)
                 cityData.itineraryIds = itineraryIds
                 citiesAndIties.push(cityData)
@@ -40,9 +43,16 @@ const citiesController = {
         try {
             //city = await City.findOne({_id : id})
             //city = await City.find({_id : id})
-            city = await City.findById(id)
+            city = await City.findById(id).populate( {
+                path: 'country',
+                select: 'name language currency -_id'
+            })    
+            const cityData = city.toObject()
+            const cityItineraries = await Itinerary.find({ city: city._id })
+            const cityItinerary = cityItineraries.map(itinerary => itinerary)
+            cityData.itineraries = cityItinerary
             res.json({
-                response: city,
+                response: cityData,
                 success
             })  
         } catch (err) {

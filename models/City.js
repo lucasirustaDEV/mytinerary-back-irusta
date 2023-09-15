@@ -6,10 +6,7 @@ const citySchema = Schema({
     name: { type: String, required: true},
     text: { type: String, required: true},
     image: { type: String, required: true},
-    /* country: { type: Schema.Types.ObjectId, ref: 'countries', required: true }, */
-    country: { type: String, required: true},
-    language: { type: String, required: true},
-    currency: { type: String, required: true},
+    country: { type: Schema.Types.ObjectId, ref: 'countries', required: true },
 }, {
     timestamps: true,
 })

@@ -1,5 +1,6 @@
 import City from '../models/City.js'
 import Itinerary from '../models/Itinerary.js'
+import User from '../models/User.js'
 
 const itinerariesController = {
     getAllItineraries: async (req, res, next) => {
@@ -10,8 +11,14 @@ const itinerariesController = {
         if (city) {
             try {
                 console.log('getItinerariesByCityId')
-                allItineraries = await Itinerary.find( { city : city } )
-     res.json({
+                allItineraries = await Itinerary.find( { city : city } ).populate( {
+                    path: 'activity',
+                    select: 'title image -_id'
+                }).populate( {
+                    path: 'provider',
+                    select: 'name surname profile_pic -_id'
+                })
+                res.json({
                     response: allItineraries,
                     success
                 })  
@@ -26,14 +33,20 @@ const itinerariesController = {
                 allItineraries = await Itinerary.find().populate( {
                     path: 'city',
                     select: 'name -_id'
+                }).populate( {
+                    path: 'activity',
+                    select: 'title description image -_id'
+                }).populate( {
+                    path: 'provider',
+                    select: 'name surname profile_pic -_id'
                 })
                 res.json({
                     response: allItineraries,
                     success
                 })
-            } catch (err) {
+            } catch (error) {
                 success: false
-                next(err)
+                next(error)
             }
         }
     },
